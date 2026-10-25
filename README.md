@@ -1,4 +1,4 @@
-# VoltGuard — ESP32 Light EV Event Data Recorder Dashboard
+ESP32 Light EV Event Data Recorder Dashboard
 
 A responsive static website that reads **your existing Arduino sketch's Firebase Realtime Database records**. No changes to the ESP32 firmware are required.
 
