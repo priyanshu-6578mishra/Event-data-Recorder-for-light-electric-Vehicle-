@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#080f1b" />
+  <meta name="description" content="Light EV Event Data Recorder — real-time vehicle safety monitoring dashboard" />
+  <title>VoltGuard | Light EV Event Data Recorder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js" defer></script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="#overview" aria-label="VoltGuard overview"><span class="brand-icon">ϟ</span><span>VOLT<span class="brand-em">GUARD</span><small>EVENT DATA RECORDER</small></span></a>
+    <div class="nav-caption">WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <a class="nav-link active" href="#overview"><span class="nav-ico">◫</span> Overview</a>
+      <a class="nav-link" href="#analytics"><span class="nav-ico">⌁</span> Analytics</a>
+      <a class="nav-link" href="#events"><span class="nav-ico">⚑</span> Event logs <span class="nav-count" id="sideEventCount">0</span></a>
+      <a class="nav-link" href="#system"><span class="nav-ico">▤</span> System info</a>
+    </nav>
+    <div class="side-spacer"></div>
+    <div class="device-box"><span class="tiny-label">CONNECTED DEVICE</span><div class="device-name"><span class="device-dot" id="deviceDot"></span>ESP32-WROOM-32</div><small id="deviceSub">Waiting for telemetry</small><div class="device-id">ID &nbsp; edr01</div></div>
+    <div class="side-footer">EDR Monitoring System <span>v1.0</span></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="breadcrumbs">Workspace <span>/</span> <b>Vehicle overview</b></div><div class="topright"><span id="modeLabel" class="mode-label">LIVE FIREBASE</span><span class="top-clock" id="clock">--:--:--</span><span class="avatar">EV</span></div></header>
+    <div class="content">
+      <section id="overview" class="hero"><div><div class="eyebrow"><span class="eyebrow-line"></span> VEHICLE INTELLIGENCE PLATFORM</div><h1>Vehicle Overview<span class="headline-dot">.</span></h1><p>Real-time telemetry and event monitoring for light electric vehicles.</p></div><div class="hero-actions"><button id="demoButton" class="button secondary" type="button">Try demo</button><button id="exportButton" class="button primary" type="button">↓ Export CSV</button></div></section>
+      <section class="status-banner" id="statusBanner"><div class="status-symbol" id="statusIcon">◉</div><div class="status-main"><div class="status-title" id="statusTitle">Connecting to Firebase…</div><div class="status-sub" id="statusMessage">Establishing a secure connection with your ESP32 telemetry.</div></div><div class="status-right"><span class="small-kicker">LAST UPDATE</span><strong id="lastUpdate">—</strong></div></section>
+      <div class="section-heading"><div><span class="section-eyebrow">01 / TELEMETRY</span><h2>Live sensor readings</h2></div><div class="update-frequency"><span class="pulse-dot"></span> ESP32 publishes approximately every 5 seconds</div></div>
+      <section class="metrics">
+        <article class="metric-card"><div class="metric-top"><span class="metric-label">TEMPERATURE</span><span class="metric-icon orange">♨</span></div><div class="metric-number"><span id="temperature">—</span><small>°C</small></div><div class="metric-bottom"><span class="status-chip" id="temperatureStatus">Awaiting data</span><span class="metric-hint">High ≥ 45°C</span></div><div class="metric-meter"><i id="tempBar"></i></div></article>
+        <article class="metric-card"><div class="metric-top"><span class="metric-label">GAS SENSOR</span><span class="metric-icon violet">≋</span></div><div class="metric-number"><span id="gas">—</span><small>ADC</small></div><div class="metric-bottom"><span class="status-chip" id="gasStatus">Awaiting data</span><span class="metric-hint">High ≥ 3000</span></div><div class="metric-meter"><i id="gasBar"></i></div></article>
+        <article class="metric-card"><div class="metric-top"><span class="metric-label">BATTERY VOLTAGE</span><span class="metric-icon lime">ϟ</span></div><div class="metric-number"><span id="voltage">—</span><small>V</small></div><div class="metric-bottom"><span class="status-chip" id="voltageStatus">Awaiting data</span><span class="metric-hint">Configured range 10.5–14.8 V</span></div><div class="metric-meter"><i id="voltageBar"></i></div></article>
+        <article class="metric-card"><div class="metric-top"><span class="metric-label">ACCELERATION</span><span class="metric-icon blue">⌁</span></div><div class="metric-number"><span id="acceleration">—</span><small>g</small></div><div class="metric-bottom"><span class="status-chip" id="accelerationStatus">Awaiting data</span><span class="metric-hint">Impact ≥ 2.5 g</span></div><div class="metric-meter"><i id="accelerationBar"></i></div></article>
+      </section>
+      <section class="middle-grid">
+        <article class="panel chart-panel" id="analytics"><div class="panel-header"><div><span class="section-eyebrow">02 / ANALYTICS</span><h2>Sensor activity</h2><p>Historical readings from Firebase</p></div><div class="chart-controls"><select id="metricSelect" aria-label="Choose chart metric"><option value="temp_c">Temperature</option><option value="gas">Gas sensor</option><option value="volt_v">Battery voltage</option><option value="acc_g">Acceleration</option></select></div></div><div class="chart-container"><canvas id="historyChart" role="img" aria-label="Historical sensor readings chart"></canvas><div id="chartFallback" class="chart-placeholder">Waiting for historical sensor data…</div></div><div class="chart-foot"><span><i class="legend-swatch"></i><span id="chartLegend">Temperature (°C)</span></span><span id="chartCount">0 readings</span></div></article>
+        <article class="panel health-panel" id="system"><div class="panel-header"><div><span class="section-eyebrow">03 / DEVICE HEALTH</span><h2>System diagnostics</h2><p>Live operating state</p></div><span class="mini-tag">EDR-01</span></div><div class="health-visual"><div class="health-ring"><div class="health-core"><span class="core-ico">ϟ</span><span id="healthText">OFFLINE</span></div></div></div><div class="health-rows"><div><span>Device connection</span><b id="connState">Connecting</b></div><div><span>Vehicle motion</span><b id="motion">—</b></div><div><span>Recorder uptime</span><b id="uptime">—</b></div><div><span>Data source</span><b id="dataSource">Firebase RTDB</b></div></div></article>
+      </section>
+      <section class="events-section" id="events"><div class="section-heading"><div><span class="section-eyebrow">04 / SAFETY RECORDS</span><h2>Critical event log</h2><p>Recorded alerts generated by the ESP32</p></div><span class="event-counter"><b id="eventCount">0</b> recorded events</span></div><div class="panel events-panel"><div class="table-wrap"><table><thead><tr><th>EVENT</th><th>DATE & TIME</th><th>STATUS</th><th>TEMPERATURE</th><th>VOLTAGE</th><th>GAS</th><th>ACCEL.</th></tr></thead><tbody id="eventRows"><tr><td colspan="7" class="empty-table">Waiting for critical event records…</td></tr></tbody></table></div><div class="table-footer"><span id="eventFoot">Showing latest 30 events</span><span>Source: Firebase /events</span></div></div></section>
+      <footer class="footer"><span>© 2026 VoltGuard · Event Data Recorder for Light Electric Vehicles</span><span>Powered by ESP32 + Firebase</span></footer>
+    </div>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
